@@ -7,9 +7,12 @@ namespace Assets.Scripts.GameManager
 {
     public class GameManager : MonoBehaviour
     {
+        
         private const float UPDATE_INTERVAL = 0.5f;
         //public fields, seen by Unity in Editor
         public GameObject character;
+        public AutonomousCharacter autonomousCharacter;
+        public GameObject redFlag;
 
         public Text HPText;
         public Text EnergyText;
@@ -22,6 +25,9 @@ namespace Assets.Scripts.GameManager
         public List<GameObject> trees;
         public List<GameObject> boars;
         public List<GameObject> beds;
+        public Dictionary<Vector3, GameObject> redFlags;
+        public Dictionary<Vector3, GameObject> greenFlags;
+        public Dictionary<Vector3, GameObject> resources; 
 
         public CharacterData characterData; 
  
@@ -33,11 +39,41 @@ namespace Assets.Scripts.GameManager
             this.characterData = new CharacterData(this.character);
             this.previousPosition = this.character.transform.position;
 
-            this.chests = GameObject.FindGameObjectsWithTag("Chest").ToList();
-            this.trees = GameObject.FindGameObjectsWithTag("Tree").ToList();
-            this.beds = GameObject.FindGameObjectsWithTag("Bed").ToList();
-            this.boars = GameObject.FindGameObjectsWithTag("Boar").ToList();
+            this.resources = new Dictionary<Vector3, GameObject>();
 
+            this.chests = GameObject.FindGameObjectsWithTag("Chest").ToList();
+            foreach (var chest in this.chests)
+            {
+                this.resources.Add(chest.transform.position, chest);
+            }
+            this.trees = GameObject.FindGameObjectsWithTag("Tree").ToList();
+            foreach (var tree in this.trees)
+            {
+                this.resources.Add(tree.transform.position, tree);
+            }
+            
+            this.beds = GameObject.FindGameObjectsWithTag("Bed").ToList();
+            foreach (var bed in this.beds)
+            {
+                this.resources.Add(bed.transform.position, bed);   
+            }
+            
+            this.boars = GameObject.FindGameObjectsWithTag("Boar").ToList();
+            foreach (var boar in this.boars)
+            {
+                this.resources.Add(boar.transform.position, boar);
+            }
+
+            this.redFlags = new Dictionary<Vector3, GameObject>();
+            foreach (var flag in GameObject.FindGameObjectsWithTag("RedFlag"))
+            {
+                this.redFlags.Add(flag.transform.position,flag);
+            }
+            this.greenFlags = new Dictionary<Vector3, GameObject>();
+            foreach (var flag in GameObject.FindGameObjectsWithTag("GreenFlag"))
+            {
+                this.greenFlags.Add(flag.transform.position, flag);
+            }
         }
 
         public void Update()
@@ -74,36 +110,64 @@ namespace Assets.Scripts.GameManager
             this.MoneyText.text = "Money: " + this.characterData.Money;
         }
 
+        
+
+        public void PlaceFlag(Vector3 position)
+        {
+            if ((position - this.characterData.CharacterGameObject.transform.position).sqrMagnitude <= 1.0f)
+            {
+                if (!this.redFlags.ContainsKey(position))
+                {
+                    var newFlag = GameObject.Instantiate(this.redFlag);
+                    newFlag.transform.position = position;
+
+                    this.redFlags.Add(position, newFlag);
+
+                    this.autonomousCharacter.UpdateRedFlags(this.redFlags.Values);
+                    this.autonomousCharacter.ConquerGoal.InsistenceValue -= 2.0f;
+                }
+            }
+        }
+
         public void MeleeAttack(GameObject boar)
         {
-            if (boar.activeSelf && InBoarMeleeRange(boar))
+            if (boar != null && boar.activeSelf && InBoarMeleeRange(boar))
             {
                 this.boars.Remove(boar);
                 GameObject.DestroyObject(boar);
                 this.characterData.HP -= 2;
                 this.characterData.Hunger -= 2;
                 this.characterData.Energy -= 0.5f;
+
+                this.resources.Remove(boar.transform.position);
+                this.autonomousCharacter.UpdateResources(this.resources.Values);
             }
         }
 
         public void Shoot(GameObject boar)
         {
-            if (boar.activeSelf && InShootRange(boar) && this.characterData.Arrows > 0)
+            if (boar != null && boar.activeSelf && InShootRange(boar) && this.characterData.Arrows > 0)
             {
                 this.boars.Remove(boar);
                 GameObject.DestroyObject(boar);
                 this.characterData.Hunger -= 2;
                 this.characterData.Arrows --;
+
+                this.resources.Remove(boar.transform.position);
+                this.autonomousCharacter.UpdateResources(this.resources.Values);
             }
         }
 
         public void PickUpChest(GameObject chest)
         {
-            if (chest.activeSelf && InChestRange(chest))
+            if (chest != null && chest.activeSelf && InChestRange(chest))
             {
                 this.chests.Remove(chest);
                 GameObject.DestroyObject(chest);
                 this.characterData.Money += 5;
+
+                this.resources.Remove(chest.transform.position);
+                this.autonomousCharacter.UpdateResources(this.resources.Values);
             }
         }
 
