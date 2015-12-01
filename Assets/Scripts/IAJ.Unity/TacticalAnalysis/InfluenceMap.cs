@@ -73,6 +73,7 @@ namespace Assets.Scripts.IAJ.Unity.TacticalAnalysis
                     return true; 
                 }
                 Closed.AddToClosed(currentRecord);
+                processedNodes++;
                 List<NavigationGraphNode> adjacentNodes = new List<NavigationGraphNode>();
                 for(int i=0; i<currentRecord.Location.OutEdgeCount;i++){
                     NavigationGraphNode node = currentRecord.Location.EdgeOut(i).ToNode;
@@ -80,7 +81,6 @@ namespace Assets.Scripts.IAJ.Unity.TacticalAnalysis
                 }
                 foreach (NavigationGraphNode adjacentNode in adjacentNodes)
                 {
-                    processedNodes++;
                     LocationRecord adjacent = new LocationRecord();
                     adjacent.Location = adjacentNode;
                     var influence = InfluenceFunction.DetermineInfluence(currentRecord.StrongestInfluenceUnit, adjacentNode.Position);
@@ -92,6 +92,7 @@ namespace Assets.Scripts.IAJ.Unity.TacticalAnalysis
                         }
                         else{ 
                             Closed.RemoveFromClosed(neighborRecord);
+                            processedNodes--;
                         }
                     }
                     else{

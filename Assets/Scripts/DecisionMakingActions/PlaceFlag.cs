@@ -1,6 +1,9 @@
 ﻿using System;
 using Assets.Scripts.IAJ.Unity.DecisionMaking.GOB;
 using Action = Assets.Scripts.IAJ.Unity.DecisionMaking.GOB.Action;
+using Assets.Scripts.GameManager;
+using Assets.Scripts.IAJ.Unity.TacticalAnalysis;
+using Assets.Scripts.IAJ.Unity.TacticalAnalysis.DataStructures;
 
 namespace Assets.Scripts.DecisionMakingActions
 {
@@ -15,46 +18,45 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override float GetDuration()
         {
-            //TODO: implement
-            throw new NotImplementedException();
+            return 0.5f;
         }
 
         public override float GetDuration(WorldModel worldModel)
         {
-            //TODO: implement
-            throw new NotImplementedException();
+            return 0.5f;
         }
 
         public override float GetGoalChange(Goal goal)
         {
-            //TODO: implement
-            throw new NotImplementedException();
+            var change = base.GetGoalChange(goal);
+            if (goal.Name == AutonomousCharacter.CONQUER_GOAL) return - 2f;
+            return change;
         }
 
         public override bool CanExecute()
         {
-            //TODO: implement
-            throw new NotImplementedException();
+           //get locationRecord at Character.BestFlagPosition
+            return this.Character.GameManager.characterData.Energy > 3.0f;  //&& Character.CombinedInfluence[locationRecord] > 2.0f;
         }
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            //TODO: implement
-            throw new NotImplementedException();
+            //get locationRecord at Character.BestFlagPosition
+            return (float)worldModel.GetProperty(Properties.ENERGY) > 3.0f; //&& Character.CombinedInfluence[locationRecord] > 2.0f;
         }
 
         public override void Execute()
         {
-
-            //TODO: implement
-            throw new NotImplementedException();
+            this.Character.GameManager.PlaceFlag(Character.BestFlagPosition);
         }
 
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            //TODO: implement
-            throw new NotImplementedException();
+            var conquerGoal = worldModel.GetGoalValue(AutonomousCharacter.CONQUER_GOAL);
+            worldModel.SetGoalValue(AutonomousCharacter.CONQUER_GOAL, conquerGoal - 2.0f);
+            var energy = (float)worldModel.GetProperty(Properties.ENERGY);
+            worldModel.SetProperty(Properties.ENERGY, energy + 2);
         }
     }
 }

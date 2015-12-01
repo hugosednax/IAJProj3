@@ -323,10 +323,57 @@ namespace Assets.Scripts
             this.BestCombinedInfluence = 0;
             this.BestFlagPosition = Vector3.zero;
 
-            //TODO implement the method
-            //DO NOT FORGET to also update the BestCombinedInfluence and BestFlagPosition properties
-            //they will be needed for the PlaceFlag action
-            throw new NotImplementedException();
+            foreach (var locationRecord in this.RedInfluenceMap.Closed.All())
+            {
+                LocationRecord resources = this.ResourceInfluenceMap.Closed.SearchInClosed(locationRecord);
+                LocationRecord green = this.GreenInfluenceMap.Closed.SearchInClosed(locationRecord);
+
+                float resourcesInf = 0f;
+                float greenInf = 1f;
+                if (resources != null)
+                    resourcesInf = resources.Influence;
+                if (green != null)
+                    greenInf = green.Influence;
+
+                float quality;
+                //assuming this is only for the red character
+                quality = locationRecord.Influence * resourcesInf / greenInf;
+                //Debug.Log(quality);
+
+                if (quality > BestCombinedInfluence)
+                {
+                    BestCombinedInfluence = quality;
+                    BestFlagPosition = locationRecord.Location.Position;
+                }
+
+                CombinedInfluence.Add(locationRecord, quality);
+            }
+                /*
+                PSEUDOCODE
+
+                for each LocationRecord locationRecord in any map{
+                    if locationRecord is also in any of the remaining maps{
+                        float quality; 
+                        if(i_am_red)
+                            quality = red * resources / green ;
+                        else
+                            quality = green * resources / red ;
+
+                        if(quality > BestCombinedInfluence){
+                            BestCombinedInfluence = quality;
+                            BestFlagPosition = nodeRecord.position;
+                        }
+
+                        CombinedInfluence.Add(nodeRecord, quality);
+                    }
+                }
+                */
+
+
+
+                //implement the method
+                //DO NOT FORGET to also update the BestCombinedInfluence and BestFlagPosition properties
+                //they will be needed for the PlaceFlag action
         }
 
         public void UpdateRedFlags(ICollection<GameObject> redFlags)
@@ -364,8 +411,27 @@ namespace Assets.Scripts
             {
                 this.influenceMapDebugMode++;
             }
+            DebugDebugInfluenceMap();
         }
 
+        private void DebugDebugInfluenceMap()
+        {
+            if (this.influenceMapDebugMode == 0)
+            {
+                Debug.Log("Red");
+            }else if (this.influenceMapDebugMode == 1)
+            {
+                Debug.Log("Green");
+            }
+            else if (this.influenceMapDebugMode == 2)
+            {
+                Debug.Log("Resources");
+            }
+            else if (this.influenceMapDebugMode == 3)
+            {
+                Debug.Log("Combined");
+            }
+        }
         public void OnDrawGizmos()
         {
             if (this.draw)
