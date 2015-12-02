@@ -330,20 +330,29 @@ namespace Assets.Scripts
                 LocationRecord resources = this.ResourceInfluenceMap.Closed.SearchInClosed(redLocationRecord);
                 LocationRecord green = this.GreenInfluenceMap.Closed.SearchInClosed(redLocationRecord);
 
-                float resourcesInf = 1f;
+                float resourcesInf = 0f;
                 float greenInf = 0f;
                 if (resources != null)
                     resourcesInf = resources.Influence;
+
+                float security = .01f;
+
                 if (green != null)
-                    greenInf = green.Influence;
+                {
+                    security = redLocationRecord.Influence - green.Influence;
+                }
 
                 float quality;
                 //assuming this is only for the red character
                 //quality = locationRecord.Influence * resourcesInf / greenInf;
-                float security = redLocationRecord.Influence - greenInf;
                 quality = resourcesInf / redLocationRecord.Influence;
                 if (quality > BestCombinedInfluence)
                 {
+                    Debug.Log(quality);
+                    Debug.Log(resourcesInf);
+                    Debug.Log(security);
+                    Debug.Log(redLocationRecord.Influence);
+                    Debug.Log("--------------------------------------");
                     BestCombinedInfluence = quality;
                     BestFlagPosition = redLocationRecord.Location.Position;
                     BestFlagLocationRecord = redLocationRecord;

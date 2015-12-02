@@ -36,7 +36,7 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override bool CanExecute()
         {
-            return this.Character.GameManager.characterData.Energy > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] > 2.0f;
+            return this.Character.GameManager.characterData.Energy > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] >= .4f;
         }
 
         public override bool CanExecute(WorldModel worldModel)
@@ -44,7 +44,7 @@ namespace Assets.Scripts.DecisionMakingActions
             /*NOTE: I added the variable BestFlagLocationRecord because
             its easier then iterating through the list to find the location record that matches the BestFlagPosition
             */
-            return (float)worldModel.GetProperty(Properties.ENERGY) > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] > 2.0f;
+            return (float)worldModel.GetProperty(Properties.ENERGY) > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] >= .4f;
         }
 
         public override void Execute()
