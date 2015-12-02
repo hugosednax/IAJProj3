@@ -4,6 +4,7 @@ using Action = Assets.Scripts.IAJ.Unity.DecisionMaking.GOB.Action;
 using Assets.Scripts.GameManager;
 using Assets.Scripts.IAJ.Unity.TacticalAnalysis;
 using Assets.Scripts.IAJ.Unity.TacticalAnalysis.DataStructures;
+using UnityEngine;
 
 namespace Assets.Scripts.DecisionMakingActions
 {
@@ -35,18 +36,20 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override bool CanExecute()
         {
-           //get locationRecord at Character.BestFlagPosition
-            return this.Character.GameManager.characterData.Energy > 3.0f;  //&& Character.CombinedInfluence[locationRecord] > 2.0f;
+            return this.Character.GameManager.characterData.Energy > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] > 2.0f;
         }
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            //get locationRecord at Character.BestFlagPosition
-            return (float)worldModel.GetProperty(Properties.ENERGY) > 3.0f; //&& Character.CombinedInfluence[locationRecord] > 2.0f;
+            /*NOTE: I added the variable BestFlagLocationRecord because
+            its easier then iterating through the list to find the location record that matches the BestFlagPosition
+            */
+            return (float)worldModel.GetProperty(Properties.ENERGY) > 3.0f && Character.CombinedInfluence[Character.BestFlagLocationRecord] > 2.0f;
         }
 
         public override void Execute()
         {
+            this.Character.Targeter.Target.Position = Character.BestFlagPosition;
             this.Character.GameManager.PlaceFlag(Character.BestFlagPosition);
         }
 

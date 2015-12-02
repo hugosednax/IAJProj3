@@ -67,6 +67,7 @@ namespace Assets.Scripts
         public Dictionary<NavigationGraphNode,IInfluenceUnit> ActiveResources { get; set; }
         public Dictionary<LocationRecord, float> CombinedInfluence { get; set; }
         public Vector3 BestFlagPosition { get; set; }
+        public LocationRecord BestFlagLocationRecord { get; set; }
         public float BestCombinedInfluence { get; set; }
 
 
@@ -298,8 +299,8 @@ namespace Assets.Scripts
             {
                 this.BestActionText.text = "Best Action Sequence:\nNone";
             }
-            
-            
+
+            //Debug.Log(Targeter.Target.Position);
             this.Character.Update();
         }
 
@@ -322,14 +323,15 @@ namespace Assets.Scripts
             this.CombinedInfluence.Clear();
             this.BestCombinedInfluence = 0;
             this.BestFlagPosition = Vector3.zero;
+            this.BestFlagLocationRecord = null;
 
-            foreach (var locationRecord in this.RedInfluenceMap.Closed.All())
+            foreach (var redLocationRecord in this.RedInfluenceMap.Closed.All())
             {
-                LocationRecord resources = this.ResourceInfluenceMap.Closed.SearchInClosed(locationRecord);
-                LocationRecord green = this.GreenInfluenceMap.Closed.SearchInClosed(locationRecord);
+                LocationRecord resources = this.ResourceInfluenceMap.Closed.SearchInClosed(redLocationRecord);
+                LocationRecord green = this.GreenInfluenceMap.Closed.SearchInClosed(redLocationRecord);
 
-                float resourcesInf = 0f;
-                float greenInf = 1f;
+                float resourcesInf = 1f;
+                float greenInf = 0f;
                 if (resources != null)
                     resourcesInf = resources.Influence;
                 if (green != null)
@@ -337,16 +339,16 @@ namespace Assets.Scripts
 
                 float quality;
                 //assuming this is only for the red character
-                quality = locationRecord.Influence * resourcesInf / greenInf;
-                //Debug.Log(quality);
-
+                //quality = locationRecord.Influence * resourcesInf / greenInf;
+                float security = redLocationRecord.Influence - greenInf;
+                quality = resourcesInf / redLocationRecord.Influence;
                 if (quality > BestCombinedInfluence)
                 {
                     BestCombinedInfluence = quality;
-                    BestFlagPosition = locationRecord.Location.Position;
+                    BestFlagPosition = redLocationRecord.Location.Position;
+                    BestFlagLocationRecord = redLocationRecord;
                 }
-
-                CombinedInfluence.Add(locationRecord, quality);
+                CombinedInfluence.Add(redLocationRecord, quality);
             }
                 /*
                 PSEUDOCODE
