@@ -32,7 +32,7 @@ namespace Assets.Scripts
         public const string GET_RICH_GOAL = "GetRich";
         public const string CONQUER_GOAL = "Conquer";
 
-        public const float DECISION_MAKING_INTERVAL = 1.5f;
+        public const float DECISION_MAKING_INTERVAL = 5f;
         //public fields to be set in Unity Editor
         public GameManager.GameManager GameManager;
         public TextMesh ActionText;
@@ -324,7 +324,7 @@ namespace Assets.Scripts
             this.BestCombinedInfluence = 0;
             this.BestFlagPosition = Vector3.zero;
             this.BestFlagLocationRecord = null;
-
+            #region red
             foreach (var redLocationRecord in this.RedInfluenceMap.Closed.All())
             {
                 LocationRecord resources = this.ResourceInfluenceMap.Closed.SearchInClosed(redLocationRecord);
@@ -332,34 +332,59 @@ namespace Assets.Scripts
 
                 float resourcesInf = 0f;
                 float greenInf = 0f;
+
                 if (resources != null)
                     resourcesInf = resources.Influence;
 
-                float security = .01f;
-
                 if (green != null)
-                {
-                    security = redLocationRecord.Influence - green.Influence;
-                }
+                    greenInf = green.Influence;
 
-                float quality;
-                //assuming this is only for the red character
-                //quality = locationRecord.Influence * resourcesInf / greenInf;
-                quality = resourcesInf / redLocationRecord.Influence;
+                float security = redLocationRecord.Influence - greenInf;
+
+                float quality = security * resourcesInf / (redLocationRecord.Influence * redLocationRecord.Influence);
                 if (quality > BestCombinedInfluence)
                 {
-                    Debug.Log(quality);
-                    Debug.Log(resourcesInf);
-                    Debug.Log(security);
-                    Debug.Log(redLocationRecord.Influence);
-                    Debug.Log("--------------------------------------");
                     BestCombinedInfluence = quality;
                     BestFlagPosition = redLocationRecord.Location.Position;
                     BestFlagLocationRecord = redLocationRecord;
                 }
                 CombinedInfluence.Add(redLocationRecord, quality);
             }
-                /*
+            #endregion
+
+            #region resources
+            foreach (var resourcesLocationRecord in this.ResourceInfluenceMap.Closed.All())
+            {
+                if (CombinedInfluence.ContainsKey(resourcesLocationRecord))
+                    continue;
+
+                LocationRecord red = this.RedInfluenceMap.Closed.SearchInClosed(resourcesLocationRecord);
+                LocationRecord green = this.GreenInfluenceMap.Closed.SearchInClosed(resourcesLocationRecord);
+
+                float redInf = 1f;
+                float greenInf = 0f;
+
+                if (green != null)
+                    greenInf = green.Influence;
+
+                if (red != null)
+                    redInf = red.Influence;
+
+                float security = redInf - greenInf;
+                float quality = security * resourcesLocationRecord.Influence / (redInf * redInf);
+
+                if (quality > BestCombinedInfluence)
+                {
+                    BestCombinedInfluence = quality;
+                    BestFlagPosition = resourcesLocationRecord.Location.Position;
+                    BestFlagLocationRecord = resourcesLocationRecord;
+                }
+                CombinedInfluence.Add(resourcesLocationRecord, quality);
+            }
+            #endregion
+
+            #region pseudocode
+            /*
                 PSEUDOCODE
 
                 for each LocationRecord locationRecord in any map{
@@ -384,7 +409,8 @@ namespace Assets.Scripts
 
                 //implement the method
                 //DO NOT FORGET to also update the BestCombinedInfluence and BestFlagPosition properties
-                //they will be needed for the PlaceFlag action
+            //they will be needed for the PlaceFlag action
+            #endregion
         }
 
         public void UpdateRedFlags(ICollection<GameObject> redFlags)
@@ -414,15 +440,16 @@ namespace Assets.Scripts
 
         private void ChangeDebugInfluenceMap()
         {
-            if (this.influenceMapDebugMode == 3)
+            this.influenceMapDebugMode = (++this.influenceMapDebugMode) % 5;
+            /*if (this.influenceMapDebugMode == 3)
             {
                 this.influenceMapDebugMode = 0;
             }
             else
             {
                 this.influenceMapDebugMode++;
-            }
-            DebugDebugInfluenceMap();
+            }*/
+            //DebugDebugInfluenceMap();
         }
 
         private void DebugDebugInfluenceMap()
@@ -493,7 +520,6 @@ namespace Assets.Scripts
                         Gizmos.DrawCube(locationRecord.Key.Location.LocalPosition, size);
                     }
                 }
-                
                 
                 //draw the current Solution Path if any (for debug purposes)
                 if (this.decomposer.UnsmoothedPath != null)

@@ -31,6 +31,7 @@ namespace Assets.Scripts.DecisionMakingActions
         {
             var change = base.GetGoalChange(goal);
             if (goal.Name == AutonomousCharacter.CONQUER_GOAL) return - 2f;
+            else if (goal.Name == AutonomousCharacter.EAT_GOAL) return +1f;
             return change;
         }
 

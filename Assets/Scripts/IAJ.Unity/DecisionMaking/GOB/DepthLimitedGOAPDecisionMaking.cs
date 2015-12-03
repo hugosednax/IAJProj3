@@ -7,6 +7,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
     public class DepthLimitedGOAPDecisionMaking
     {
         public const int MAX_DEPTH = 2;
+        public const int MAX_PROCESSED_ACTIONS = 250;
         public int ActionCombinationsProcessedPerFrame { get; set; }
         public float TotalProcessingTime { get; set; }
         public int TotalActionCombinationsProcessed { get; set; }
@@ -50,31 +51,42 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             var processedActions = 0;
             int currentDepth = 0;
             var startTime = Time.realtimeSinceStartup;
-            float bestValue = Mathf.Infinity;
-            Action bestAction = null;
-            WorldModel[] models = new WorldModel[MAX_DEPTH + 1];
-            models[0] = InitialWorldModel;
             Action[] actions = new Action[MAX_DEPTH];
 
             while(currentDepth >= 0){
-                float currentValue = models[currentDepth].CalculateDiscontentment(Goals);
+                if (processedActions > MAX_PROCESSED_ACTIONS)
+                {
+                    InProgress = true;
+                    return null;
+                }
+                float currentValue = Models[currentDepth].CalculateDiscontentment(Goals);
                 if(currentDepth >= MAX_DEPTH){
-                    if(currentValue < bestValue){
-                        bestValue = currentValue;
-                        bestAction = actions[0];
+                    if(currentValue < BestDiscontentmentValue){
+                        BestDiscontentmentValue = currentValue;
+                        BestAction = actions[0];
+                        BestDiscontentmentValue = BestDiscontentmentValue;
+                        actions.CopyTo(BestActionSequence,0);
+                        TotalProcessingTime = Time.realtimeSinceStartup - startTime;
+                        
                     }
+                    processedActions++;
+                    TotalActionCombinationsProcessed++;
                     currentDepth -= 1;
                     continue;
                 }
-                Action nextAction = models[currentDepth].GetNextAction();
+                Action nextAction = Models[currentDepth].GetNextAction();
+                
                 if (nextAction != null){
-                    models[currentDepth+1] = models[currentDepth].GenerateChildWorldModel();
-                    nextAction.ApplyActionEffects(models[currentDepth+1]);
+                    Models[currentDepth+1] = Models[currentDepth].GenerateChildWorldModel();
+                    nextAction.ApplyActionEffects(Models[currentDepth+1]);
                     actions[currentDepth] = nextAction;
                     currentDepth += 1;
                 }
                 else
                     currentDepth -= 1;
             }
-            return bestAction;        }    }
+            InProgress = false;
+            return BestAction;
+        }
+    }
 }

@@ -56,6 +56,10 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override void Execute()
         {
+            if (this.Character.Targeter.Target == null)
+                Debug.Log("1st target null");
+            if(this.Target == null)
+                Debug.Log("2nd target null");
             this.Character.Targeter.Target.Position = this.Target.transform.position;
         }
 

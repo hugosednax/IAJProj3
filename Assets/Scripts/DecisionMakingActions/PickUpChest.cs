@@ -31,14 +31,12 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override bool CanExecute()
         {
-            if (!base.CanExecute()) return false;
-            return true;
+            return base.CanExecute();
         }
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            if (!base.CanExecute(worldModel)) return false;
-            return true;
+            return base.CanExecute(worldModel);
         }
 
         public override void Execute()
