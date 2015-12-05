@@ -5,13 +5,14 @@ using Assets.Scripts.IAJ.Unity.Pathfinding.Path;
 using RAIN.Navigation.Graph;
 using RAIN.Navigation.NavMesh;
 using UnityEngine;
+using Assets.Scripts.IAJ.Unity.TacticalAnalysis.DataStructures;
 
 namespace Assets.Scripts.IAJ.Unity.Pathfinding
 {
     public class NodeArrayAStarPathFinding : AStarPathfinding
     {
         protected NodeRecordArray NodeRecordArray { get; set; }
-        public NodeArrayAStarPathFinding(NavMeshPathGraph graph, IHeuristic heuristic) : base(graph,null,null,heuristic)
+        public NodeArrayAStarPathFinding(NavMeshPathGraph graph, IHeuristic heuristic, AutonomousCharacter character) : base(graph,null,null,heuristic, character)
         {
             //do not change this
             var nodes = this.GetNodesHack(graph);
@@ -49,7 +50,19 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
 
             if (childNodeRecord.status == NodeStatus.Closed) return;
 
-            g = bestNode.gValue + connectionEdge.Cost;
+            LocationRecord edgeFromLocRec = new LocationRecord(){
+                Location = connectionEdge.FromNode
+            };
+            LocationRecord edgeToLocRec = new LocationRecord(){
+                Location = connectionEdge.ToNode
+            };
+            float securityAverage = 1.5f;
+            if (autonomousCharacter.SecurityMap.ContainsKey(edgeToLocRec) && autonomousCharacter.SecurityMap.ContainsKey(edgeFromLocRec))
+            {
+                securityAverage = (autonomousCharacter.SecurityMap[edgeFromLocRec] + autonomousCharacter.SecurityMap[edgeToLocRec]) * 0.5f;
+            }
+
+            g = bestNode.gValue +  connectionEdge.Cost/(1.5f + securityAverage);
             h = this.Heuristic.H(childNode, this.GoalNode);
             f = F(g,h);
 

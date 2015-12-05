@@ -25,11 +25,12 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
         public NavigationGraphNode StartNode { get; protected set; }
         public Vector3 StartPosition { get; protected set; }
         public Vector3 GoalPosition { get; protected set; }
+        public AutonomousCharacter autonomousCharacter { get; set; }
 
         //heuristic function
         public IHeuristic Heuristic { get; protected set; }
 
-        public AStarPathfinding(NavMeshPathGraph graph, IOpenSet open, IClosedSet closed, IHeuristic heuristic)
+        public AStarPathfinding(NavMeshPathGraph graph, IOpenSet open, IClosedSet closed, IHeuristic heuristic, AutonomousCharacter character)
         {
             this.NavMeshGraph = graph;
             this.Open = open;
@@ -37,6 +38,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
             this.NodesPerSearch = uint.MaxValue; //by default we process all nodes in a single request
             this.InProgress = false;
             this.Heuristic = heuristic;
+            this.autonomousCharacter = character;
         }
 
         public void InitializePathfindingSearch(Vector3 startPosition, Vector3 goalPosition)

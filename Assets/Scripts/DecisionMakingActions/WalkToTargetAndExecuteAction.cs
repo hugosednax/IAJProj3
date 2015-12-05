@@ -53,9 +53,9 @@ namespace Assets.Scripts.DecisionMakingActions
                 Location = targetNode
             };
             float security = 0.0f;
-            if(this.Character.CombinedInfluence.ContainsKey(rec))
+            if (this.Character.SecurityMap.ContainsKey(rec))
             {
-                security = this.Character.CombinedInfluence[rec];
+                security = this.Character.SecurityMap[rec];
             }
             if (security >= 0.0f)
                 return true;
@@ -75,9 +75,9 @@ namespace Assets.Scripts.DecisionMakingActions
                 Location = targetNode
             };
             float security = 0.0f;
-            if (this.Character.CombinedInfluence.ContainsKey(rec))
+            if (this.Character.SecurityMap.ContainsKey(rec))
             {
-                security = this.Character.CombinedInfluence[rec];
+                security = this.Character.SecurityMap[rec];
             }
             if (security >= 0.0f)
                 return true;

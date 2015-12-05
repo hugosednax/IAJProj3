@@ -66,6 +66,7 @@ namespace Assets.Scripts
         public List<IInfluenceUnit> GreenFlags { get; set; }
         public Dictionary<NavigationGraphNode,IInfluenceUnit> ActiveResources { get; set; }
         public Dictionary<LocationRecord, float> CombinedInfluence { get; set; }
+        public Dictionary<LocationRecord, float> SecurityMap { get; set; }
         public Vector3 BestFlagPosition { get; set; }
         public LocationRecord BestFlagLocationRecord { get; set; }
         public float BestCombinedInfluence { get; set; }
@@ -93,7 +94,7 @@ namespace Assets.Scripts
 
            
             //initialization of the movement algorithms
-            this.aStarPathFinding = new NodeArrayAStarPathFinding(this.navMesh, new EuclideanDistanceHeuristic());
+            this.aStarPathFinding = new NodeArrayAStarPathFinding(this.navMesh, new EuclideanDistanceHeuristic(), this);
             this.aStarPathFinding.NodesPerSearch = 500;
 
             var steeringPipeline = new SteeringPipeline
@@ -116,6 +117,7 @@ namespace Assets.Scripts
             this.GreenInfluenceMap = new InfluenceMap(this.navMesh, new SimpleUnorderedList(), new ClosedLocationRecordDictionary(), new LinearInfluenceFunction(), 0.1f);
             this.ResourceInfluenceMap = new InfluenceMap(this.navMesh, new SimpleUnorderedList(), new ClosedLocationRecordDictionary(), new LinearInfluenceFunction(), 0.1f);
             this.CombinedInfluence = new Dictionary<LocationRecord, float>();
+            this.SecurityMap = new Dictionary<LocationRecord, float>();
 
             //initialization of the GOB decision making
             //let's start by creating 5 main goals
@@ -321,6 +323,7 @@ namespace Assets.Scripts
             }
 
             this.CombinedInfluence.Clear();
+            this.SecurityMap.Clear();
             this.BestCombinedInfluence = 0;
             this.BestFlagPosition = Vector3.zero;
             this.BestFlagLocationRecord = null;
@@ -348,6 +351,7 @@ namespace Assets.Scripts
                     BestFlagPosition = redLocationRecord.Location.Position;
                     BestFlagLocationRecord = redLocationRecord;
                 }
+                SecurityMap.Add(redLocationRecord, security);
                 CombinedInfluence.Add(redLocationRecord, quality);
             }
             #endregion
@@ -379,6 +383,7 @@ namespace Assets.Scripts
                     BestFlagPosition = resourcesLocationRecord.Location.Position;
                     BestFlagLocationRecord = resourcesLocationRecord;
                 }
+                SecurityMap.Add(resourcesLocationRecord, security);
                 CombinedInfluence.Add(resourcesLocationRecord, quality);
             }
             #endregion
