@@ -72,7 +72,7 @@ namespace Assets.Scripts
 
 
         //private fields for internal use only
-        private NavMeshPathGraph navMesh;
+        public NavMeshPathGraph navMesh;
         private AStarPathfinding aStarPathFinding;
         private PathFindingDecomposer decomposer;
         

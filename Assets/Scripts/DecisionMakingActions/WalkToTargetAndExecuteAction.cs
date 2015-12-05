@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.GameManager;
 using Assets.Scripts.IAJ.Unity.DecisionMaking.GOB;
+using Assets.Scripts.IAJ.Unity.TacticalAnalysis.DataStructures;
+using RAIN.Navigation.Graph;
 using UnityEngine;
 using Action = Assets.Scripts.IAJ.Unity.DecisionMaking.GOB.Action;
 
@@ -44,22 +46,46 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override bool CanExecute()
         {
-            return this.Target != null;
+            if(this.Target == null)
+                return false;
+            NavigationGraphNode targetNode = this.Character.navMesh.QuantizeToNode(this.Target.transform.position, 10.0f);
+            LocationRecord rec = new LocationRecord(){
+                Location = targetNode
+            };
+            float security = 0.0f;
+            if(this.Character.CombinedInfluence.ContainsKey(rec))
+            {
+                security = this.Character.CombinedInfluence[rec];
+            }
+            if (security >= 0.0f)
+                return true;
+            return false;
         }
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            if (this.Target == null) return false;
+            if (this.Target == null)
+                return false;
             var targetEnabled = (bool)worldModel.GetProperty(this.Target.name);
-            return targetEnabled;
+            if (!targetEnabled)
+                return false;
+            NavigationGraphNode targetNode = this.Character.navMesh.QuantizeToNode(this.Target.transform.position, 10.0f);
+            LocationRecord rec = new LocationRecord()
+            {
+                Location = targetNode
+            };
+            float security = 0.0f;
+            if (this.Character.CombinedInfluence.ContainsKey(rec))
+            {
+                security = this.Character.CombinedInfluence[rec];
+            }
+            if (security >= 0.0f)
+                return true;
+            return false;
         }
 
         public override void Execute()
         {
-            if (this.Character.Targeter.Target == null)
-                Debug.Log("1st target null");
-            if(this.Target == null)
-                Debug.Log("2nd target null");
             this.Character.Targeter.Target.Position = this.Target.transform.position;
         }
 

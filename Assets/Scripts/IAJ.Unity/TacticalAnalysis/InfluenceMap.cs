@@ -128,6 +128,6 @@ namespace Assets.Scripts.IAJ.Unity.TacticalAnalysis
                 ((NavMeshPoly)unit.Location).RemoveConnectedPoly();
             }
         }
-        
+
     }
 }
