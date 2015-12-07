@@ -19,12 +19,15 @@ namespace Assets.Scripts.DecisionMakingActions
 
         public override float GetDuration()
         {
-            return 0.5f;
+            //assume a velocity of 20.0f/s to get to the target
+            return (this.Character.BestFlagPosition - this.Character.Character.KinematicData.position).magnitude / 20.0f;
         }
 
         public override float GetDuration(WorldModel worldModel)
         {
-            return 0.5f;
+            //assume a velocity of 20.0f/s to get to the target
+            var position = (Vector3)worldModel.GetProperty(Properties.POSITION);
+            return (this.Character.BestFlagPosition - position).magnitude / 20.0f;
         }
 
         public override float GetGoalChange(Goal goal)
@@ -59,8 +62,23 @@ namespace Assets.Scripts.DecisionMakingActions
         {
             var conquerGoal = worldModel.GetGoalValue(AutonomousCharacter.CONQUER_GOAL);
             worldModel.SetGoalValue(AutonomousCharacter.CONQUER_GOAL, conquerGoal - 2.0f);
+            var duration = this.GetDuration(worldModel);
+            var energyChange = duration * 0.01f;
+            var hungerChange = duration * 0.1f;
+
+            var restValue = worldModel.GetGoalValue(AutonomousCharacter.REST_GOAL);
+            worldModel.SetGoalValue(AutonomousCharacter.REST_GOAL, restValue + energyChange);
+
             var energy = (float)worldModel.GetProperty(Properties.ENERGY);
-            worldModel.SetProperty(Properties.ENERGY, energy + 2);
+            worldModel.SetProperty(Properties.ENERGY, energy - energyChange);
+
+            var eatGoalValue = worldModel.GetGoalValue(AutonomousCharacter.EAT_GOAL);
+            worldModel.SetGoalValue(AutonomousCharacter.EAT_GOAL, eatGoalValue + hungerChange);
+
+            var hunger = (float)worldModel.GetProperty(Properties.HUNGER);
+            worldModel.SetProperty(Properties.HUNGER, hunger + hungerChange);
+
+            worldModel.SetProperty(Properties.POSITION, Character.BestFlagPosition);
         }
     }
 }

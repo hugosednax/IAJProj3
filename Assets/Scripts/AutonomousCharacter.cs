@@ -32,7 +32,7 @@ namespace Assets.Scripts
         public const string GET_RICH_GOAL = "GetRich";
         public const string CONQUER_GOAL = "Conquer";
 
-        public const float DECISION_MAKING_INTERVAL = 5f;
+        public const float DECISION_MAKING_INTERVAL = 2f;
         //public fields to be set in Unity Editor
         public GameManager.GameManager GameManager;
         public TextMesh ActionText;
