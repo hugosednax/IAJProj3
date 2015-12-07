@@ -20,6 +20,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             this.PropertiesArray = new object[5];
             this.GoalValues = new float[5];
             Populatefloat(GoalValues, 0f);
+            PopulateProperties();
         }
 
         public WorldModelFEAR(WorldModelFEAR parent) : base(parent)
@@ -27,6 +28,8 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             this.PropertiesArray = new object[5];
             this.GoalValues = new float[5];
             Populatefloat(GoalValues, 0f);
+            PopulateProperties();
+            InitArrays(parent.boars, parent.trees, parent.beds, parent.chests);
         }
 
         public void InitArrays(int boars, int trees, int beds, int chests)
@@ -37,7 +40,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             this.chests = chests;
             this.Resources = new object[boars+trees+beds+chests];
             int count = boars + trees + beds + chests;
-            PopulateObject(Resources, 0f, count);
+            PopulateObject(Resources, true, count);
         }
 
         void PopulateObject(object[] arr, object value, int count)
@@ -105,8 +108,8 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             else if (propertyName.Contains("Chest"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                Debug.Log("Length : " + Resources.Length);
-                Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
+                //Debug.Log("Length : " + Resources.Length);
+                //Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
                 return this.Resources[boars + trees + beds + cloneNumber];
             }
             else if (this.Parent != null)
@@ -173,8 +176,8 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
                 int cloneNumber = getCloneNumber(propertyName);
                 //Debug.Log("test0" + propertyName);
                 //Debug.Log("test " + (boars + trees + beds) +" "+ propertyName[7] + " "+ cloneNumber);
-                Debug.Log("Length : " + Resources.Length);
-                Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
+                //Debug.Log("Length : " + Resources.Length);
+                //Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
                 this.Resources[boars + trees + beds + cloneNumber] = value;
                 return;
             }
