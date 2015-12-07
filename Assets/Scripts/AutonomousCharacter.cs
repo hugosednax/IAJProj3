@@ -153,27 +153,35 @@ namespace Assets.Scripts
             this.Actions.Add(new PlaceFlag(this));
 
             this.ActiveResources = new Dictionary<NavigationGraphNode, IInfluenceUnit>();
+            int boars = 0;
+            int chests = 0;
+            int trees = 0;
+            int beds = 0;
 
             foreach (var chest in GameObject.FindGameObjectsWithTag("Chest"))
             {
+                chests++;
                 this.Actions.Add(new PickUpChest(this, chest));
                 this.AddResource(new Resource(this.navMesh.QuantizeToNode(chest.transform.position, 1.0f)));
             }
 
             foreach (var tree in GameObject.FindGameObjectsWithTag("Tree"))
             {
+                trees++;
                 this.Actions.Add(new GetArrows(this, tree));
                 this.AddResource(new Resource(this.navMesh.QuantizeToNode(tree.transform.position, 1.0f)));
             }
-
+            
             foreach (var bed in GameObject.FindGameObjectsWithTag("Bed"))
             {
+                beds++;
                 this.Actions.Add(new Sleep(this, bed));
                 this.AddResource(new Resource(this.navMesh.QuantizeToNode(bed.transform.position, 1.0f)));
             }
 
             foreach (var boar in GameObject.FindGameObjectsWithTag("Boar"))
             {
+                boars++;
                 this.AddResource(new Resource(this.navMesh.QuantizeToNode(boar.transform.position, 1.0f)));
                 this.Actions.Add(new MeleeAttack(this, boar));
                 this.Actions.Add(new Shoot(this, boar));
@@ -199,7 +207,8 @@ namespace Assets.Scripts
             this.GreenInfluenceMap.Initialize(this.GreenFlags);
 
 
-            var worldModel = new CurrentStateWorldModelDictionary(this.GameManager, this.Actions, this.Goals);
+            var worldModel = new CurrentStateWorldModelFEAR(this.GameManager, this.Actions, this.Goals);
+            worldModel.InitArrays( boars, 1, trees,  beds,  chests);
 
             this.GOAPDecisionMaking = new DepthLimitedGOAPDecisionMaking(worldModel,this.Actions,this.Goals);
         }

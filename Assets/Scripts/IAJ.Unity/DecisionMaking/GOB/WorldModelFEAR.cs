@@ -1,34 +1,70 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
+using System;
 
 namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
     public class WorldModelFEAR : WorldModel
     {
-        private string[] ResourceID { get; set; }
         private object[] Properties { get; set; }
         private object[] Resources { get; set; }
         private float[] GoalValues { get; set; }
-        //private Dictionary<string, object> Properties { get; set; }
-        //private Dictionary<string, float> GoalValues { get; set; }
+        int boars;
+        int trees;
+        int beds;
+        int arrows;
+        int chests;
 
         public WorldModelFEAR(List<Action> actions) : base(actions)
         {
-            this.ResourceID = new string[50];
             this.Properties = new object[5];
-            this.Resources = new object[50];
             this.GoalValues = new float[5];
-            //this.Properties = new Dictionary<string, object>();
-            //this.GoalValues = new Dictionary<string, float>();
+            PopulateObject(Properties, 0f);
+            Populatefloat(GoalValues, 0f);
         }
 
         public WorldModelFEAR(WorldModelFEAR parent) : base(parent)
         {
-            //this.Properties = new Dictionary<string, object>();
-            //this.GoalValues = new Dictionary<string, float>();
-            this.ResourceID = new string[50];
             this.Properties = new object[5];
-            this.Resources = new object[5];
             this.GoalValues = new float[5];
+            PopulateProperties();
+            Populatefloat(GoalValues, 0f);
+        }
+
+        public void InitArrays(int boars, int arrows, int trees, int beds, int chests)
+        {
+            this.boars = boars;
+            this.trees = trees;
+            this.beds = beds;
+            this.chests = chests;
+            this.arrows = arrows;
+            this.Resources = new object[boars+arrows+trees+beds+chests];
+            PopulateObject(Resources, 0f);
+        }
+
+        void PopulateObject(object[] arr, object value)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                arr[i] = value;
+            }
+        }
+
+        void PopulateProperties()
+        {
+            Properties[0] = 0f;
+            Properties[1] = 0f;
+            Properties[2] = 0f;
+            Properties[3] = 0;
+            Properties[4] = 0f;
+        }
+
+        void Populatefloat(float[] arr, float value)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                arr[i] = value;
+            }
         }
 
         public override object GetProperty(string propertyName)
@@ -59,7 +95,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             }
             else for (int i = 0; i < 50; i++)
                 {
-                    if (this.ResourceID[i].Equals(propertyName))
+                    if (this.Resources[i].Equals(propertyName))
                     {
                         return this.Resources[i];
                     }
@@ -94,21 +130,41 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
                 this.Properties[4] = value;
                 return;
             }
-            else for (int i = 0; i < 50; i++)
-                {
-                    if (this.ResourceID[i] == null)
-                    {
-                        this.Resources[i] = value;
-                        this.ResourceID[i] = propertyName;
-                        break;
-                    }
-
-                    else if (this.ResourceID[i].Equals(propertyName))
-                    {
-                        this.Resources[i] = value;
-                        break;
-                    }
-                }
+            else if (propertyName.Contains("Boar"))
+            {
+                Debug.Log("test0" + propertyName);
+                Debug.Log("test" + (int)( + propertyName[6]));
+                this.Resources[0 + propertyName[6]] = value;
+                return;
+            }
+            else if (propertyName.Contains("Tree"))
+            {
+                Debug.Log("test0" + propertyName);
+                Debug.Log("test" + (int)(0 + propertyName[6]));
+                this.Resources[boars + propertyName[6]] = value;
+                return;
+            }
+            else if (propertyName.Contains("Bed"))
+            {
+                Debug.Log("test0" + propertyName);
+                Debug.Log("test" + (int)(0 + propertyName[6]));
+                this.Resources[boars+trees + propertyName[5]] = value;
+                return;
+            }
+            else if (propertyName.Contains("Chest"))
+            {
+                Debug.Log("test0" + propertyName);
+                Debug.Log("test " + (boars + trees + beds) +" "+ propertyName[7] + " "+ (int)(boars + trees + beds + propertyName[7]));
+                this.Resources[boars + trees + beds + propertyName[7]] = value;
+                return;
+            }
+            else if (propertyName.Contains("Arrows"))
+            {
+                Debug.Log("test0" + propertyName);
+                Debug.Log("test" + (int)(0 + propertyName[6]));
+                this.Resources[boars + trees + beds + chests + propertyName[8]] = value;
+                return;
+            }
             return;
         }
 

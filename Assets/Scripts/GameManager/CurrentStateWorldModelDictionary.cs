@@ -21,7 +21,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             this.ActionEnumerator.Reset();
         }

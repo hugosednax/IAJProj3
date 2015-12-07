@@ -9,6 +9,10 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 
         protected WorldModel Parent { get; set; }
 
+        public virtual void Initialize()
+        {
+        }
+
         public WorldModel(List<Action> actions)
         {
             this.Actions = actions;

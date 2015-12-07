@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.GameManager;
+using UnityEngine;
 
 namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
@@ -21,7 +22,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             this.ActionEnumerator.Reset();
         }
