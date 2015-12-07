@@ -208,7 +208,7 @@ namespace Assets.Scripts
 
 
             var worldModel = new CurrentStateWorldModelFEAR(this.GameManager, this.Actions, this.Goals);
-            worldModel.InitArrays( boars, 1, trees,  beds,  chests);
+            worldModel.InitArrays( boars, trees,  beds,  chests);
 
             this.GOAPDecisionMaking = new DepthLimitedGOAPDecisionMaking(worldModel,this.Actions,this.Goals);
         }

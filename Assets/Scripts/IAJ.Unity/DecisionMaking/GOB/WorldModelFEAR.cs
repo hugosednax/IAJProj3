@@ -1,50 +1,48 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets.Scripts.GameManager;
 
 namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
     public class WorldModelFEAR : WorldModel
     {
-        private object[] Properties { get; set; }
+        private object[] PropertiesArray { get; set; }
         private object[] Resources { get; set; }
         private float[] GoalValues { get; set; }
         int boars;
         int trees;
         int beds;
-        int arrows;
         int chests;
 
         public WorldModelFEAR(List<Action> actions) : base(actions)
         {
-            this.Properties = new object[5];
+            this.PropertiesArray = new object[5];
             this.GoalValues = new float[5];
-            PopulateObject(Properties, 0f);
             Populatefloat(GoalValues, 0f);
         }
 
         public WorldModelFEAR(WorldModelFEAR parent) : base(parent)
         {
-            this.Properties = new object[5];
+            this.PropertiesArray = new object[5];
             this.GoalValues = new float[5];
-            PopulateProperties();
             Populatefloat(GoalValues, 0f);
         }
 
-        public void InitArrays(int boars, int arrows, int trees, int beds, int chests)
+        public void InitArrays(int boars, int trees, int beds, int chests)
         {
             this.boars = boars;
             this.trees = trees;
             this.beds = beds;
             this.chests = chests;
-            this.arrows = arrows;
-            this.Resources = new object[boars+arrows+trees+beds+chests];
-            PopulateObject(Resources, 0f);
+            this.Resources = new object[boars+trees+beds+chests];
+            int count = boars + trees + beds + chests;
+            PopulateObject(Resources, 0f, count);
         }
 
-        void PopulateObject(object[] arr, object value)
+        void PopulateObject(object[] arr, object value, int count)
         {
-            for (int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < count; i++)
             {
                 arr[i] = value;
             }
@@ -52,11 +50,11 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 
         void PopulateProperties()
         {
-            Properties[0] = 0f;
-            Properties[1] = 0f;
-            Properties[2] = 0f;
-            Properties[3] = 0;
-            Properties[4] = 0f;
+            PropertiesArray[0] = 0.0f;
+            PropertiesArray[1] = 0;
+            PropertiesArray[2] = 0;
+            PropertiesArray[3] = 0;
+            PropertiesArray[4] = 0.0f;
         }
 
         void Populatefloat(float[] arr, float value)
@@ -69,37 +67,52 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 
         public override object GetProperty(string propertyName)
         {
-            if (propertyName == "Energy")
+            if (propertyName.Equals(Properties.ENERGY))
             {
-                return this.Properties[0];
+                return this.PropertiesArray[0];
             }
-            else if (propertyName == "Arrows")
+            else if (propertyName.Equals(Properties.ARROWS))
             {
-                return this.Properties[1];
+                return this.PropertiesArray[1];
             }
-            else if (propertyName == "Health")
+            else if (propertyName.Equals(Properties.HP))
             {
-                return this.Properties[2];
+                return this.PropertiesArray[2];
             }
-            else if (propertyName == "Money")
+            else if (propertyName.Equals(Properties.MONEY))
             {
-                return this.Properties[3];
+                return this.PropertiesArray[3];
             }
-            else if (propertyName == "Hunger")
+            else if (propertyName.Equals(Properties.HUNGER))
             {
-                return this.Properties[4];
+                return this.PropertiesArray[4];
+            }
+            else if (propertyName.Contains("Boar"))
+            {
+                int cloneNumber = getCloneNumber(propertyName);
+                return this.Resources[0 + cloneNumber];
+            }
+            else if (propertyName.Contains("Tree"))
+            {
+                int cloneNumber = getCloneNumber(propertyName);
+                return this.Resources[boars + cloneNumber];
+            }
+            else if (propertyName.Contains("Bed"))
+            {
+                int cloneNumber = getCloneNumber(propertyName);
+                return this.Resources[boars + trees + cloneNumber];
+            }
+            else if (propertyName.Contains("Chest"))
+            {
+                int cloneNumber = getCloneNumber(propertyName);
+                Debug.Log("Length : " + Resources.Length);
+                Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
+                return this.Resources[boars + trees + beds + cloneNumber];
             }
             else if (this.Parent != null)
             {
                 return this.Parent.GetProperty(propertyName);
             }
-            else for (int i = 0; i < 50; i++)
-                {
-                    if (this.Resources[i].Equals(propertyName))
-                    {
-                        return this.Resources[i];
-                    }
-                }
             return null; 
         }
 
@@ -107,62 +120,62 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         {
             if (propertyName.Equals("Energy"))
             {
-                this.Properties[0] = value;
+                this.PropertiesArray[0] = value;
                 return;
             }
             else if (propertyName.Equals("Arrows"))
             {
-                this.Properties[1] = value;
+                this.PropertiesArray[1] = value;
                 return;
             }
             else if (propertyName.Equals("Health"))
             {
-                this.Properties[2] = value;
+                this.PropertiesArray[2] = value;
                 return;
             }
             else if (propertyName.Equals("Money"))
             {
-                this.Properties[3] = value;
+                this.PropertiesArray[3] = value;
                 return;
             }
             else if (propertyName.Equals("Hunger"))
             {
-                this.Properties[4] = value;
+                this.PropertiesArray[4] = value;
                 return;
             }
             else if (propertyName.Contains("Boar"))
             {
-                Debug.Log("test0" + propertyName);
-                Debug.Log("test" + (int)( + propertyName[6]));
-                this.Resources[0 + propertyName[6]] = value;
+                int cloneNumber = getCloneNumber(propertyName);
+
+               //Debug.Log("test0" + propertyName);
+               // Debug.Log("test" + cloneNumber);
+                this.Resources[0 + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Tree"))
             {
-                Debug.Log("test0" + propertyName);
-                Debug.Log("test" + (int)(0 + propertyName[6]));
-                this.Resources[boars + propertyName[6]] = value;
+                int cloneNumber = getCloneNumber(propertyName);
+                //Debug.Log("test0" + propertyName);
+               /// Debug.Log("test" + cloneNumber);
+                this.Resources[boars + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Bed"))
             {
-                Debug.Log("test0" + propertyName);
-                Debug.Log("test" + (int)(0 + propertyName[6]));
-                this.Resources[boars+trees + propertyName[5]] = value;
+                int cloneNumber = getCloneNumber(propertyName);
+                //Debug.Log("test0" + propertyName);
+                //Debug.Log("test" + cloneNumber);
+                this.Resources[boars + trees + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Chest"))
             {
-                Debug.Log("test0" + propertyName);
-                Debug.Log("test " + (boars + trees + beds) +" "+ propertyName[7] + " "+ (int)(boars + trees + beds + propertyName[7]));
-                this.Resources[boars + trees + beds + propertyName[7]] = value;
-                return;
-            }
-            else if (propertyName.Contains("Arrows"))
-            {
-                Debug.Log("test0" + propertyName);
-                Debug.Log("test" + (int)(0 + propertyName[6]));
-                this.Resources[boars + trees + beds + chests + propertyName[8]] = value;
+                int cloneNumber = getCloneNumber(propertyName);
+                //Debug.Log("test0" + propertyName);
+                //Debug.Log("test " + (boars + trees + beds) +" "+ propertyName[7] + " "+ cloneNumber);
+                Debug.Log("Length : " + Resources.Length);
+                Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
+                this.Resources[boars + trees + beds + cloneNumber] = value;
                 return;
             }
             return;
@@ -176,6 +189,20 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             if (goalName.Equals("GetRich")) return this.GoalValues[3];
             if (goalName.Equals("Conquer")) return this.GoalValues[4];
             else return 0;
+        }
+
+        private int getCloneNumber(string propertyName) 
+        {
+            int cloneNumber = 0;
+            if (propertyName.Contains("("))
+            {
+                char delimeter1 = '(';
+                char delimeter2 = ')';
+
+                string[] splits = propertyName.Split(delimeter1);
+                cloneNumber = Int32.Parse(splits[1].Split(delimeter2)[0]);
+            }
+            return cloneNumber;
         }
 
         public override void SetGoalValue(string goalName, float value)
