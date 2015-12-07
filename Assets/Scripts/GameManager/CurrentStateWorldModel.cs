@@ -8,13 +8,11 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
     public class CurrentStateWorldModel : WorldModel
     {
         private GameManager.GameManager GameManager { get; set; }
-        private float[] GoalValues { get; set; } 
-        public CurrentStateWorldModel(GameManager.GameManager gameManager, List<Action> actions, float[] goals) : base(actions)
-        {
+        private Dictionary<string, Goal> Goals { get; set; } 
+        public CurrentStateWorldModel(GameManager.GameManager gameManager, List<Action> actions, List<Goal> goals) : base(actions){
             this.GameManager = gameManager;
             this.Parent = null;
-            this.GoalValues = ;
-
+            this.Goals = new Dictionary<string, Goal>();
             foreach (var goal in goals)
             {
                 this.Goals.Add(goal.Name,goal);
