@@ -5,7 +5,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
     //class that represents a world model that corresponds to the current state of the world,
     //all required properties and goals are stored inside the game manager
-    public class CurrentStateWorldModelFEAR : WorldModel
+    public class CurrentStateWorldModelFEAR : WorldModelFEAR
     {
         private GameManager.GameManager GameManager { get; set; }
         private Dictionary<string, Goal> Goals { get; set; }
