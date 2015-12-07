@@ -56,8 +56,6 @@ namespace Assets.Scripts.DecisionMakingActions
 
             var eatValue = worldModel.GetGoalValue(AutonomousCharacter.EAT_GOAL);
             worldModel.SetGoalValue(AutonomousCharacter.EAT_GOAL, eatValue - 2.0f);
-            var restValue = worldModel.GetGoalValue(AutonomousCharacter.REST_GOAL);
-            worldModel.SetGoalValue(AutonomousCharacter.REST_GOAL, restValue + 0.5f);
 
             var energy = (float)worldModel.GetProperty(Properties.ENERGY);
             worldModel.SetProperty(Properties.ENERGY, energy - 0.5f);

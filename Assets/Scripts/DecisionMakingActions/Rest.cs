@@ -35,9 +35,7 @@ namespace Assets.Scripts.DecisionMakingActions
         public override void ApplyActionEffects(WorldModel worldModel)
         {
             var restValue = worldModel.GetGoalValue(AutonomousCharacter.REST_GOAL);
-            worldModel.SetGoalValue(AutonomousCharacter.REST_GOAL, restValue - 1.0f);
-            var survival = worldModel.GetGoalValue(AutonomousCharacter.SURVIVE_GOAL);
-            worldModel.SetProperty(AutonomousCharacter.SURVIVE_GOAL, survival + 1.0f);
+            worldModel.SetGoalValue(AutonomousCharacter.REST_GOAL, restValue - 0.1f);
             var eat = worldModel.GetGoalValue(AutonomousCharacter.EAT_GOAL);
             worldModel.SetProperty(AutonomousCharacter.EAT_GOAL, eat + 0.2f);
         }

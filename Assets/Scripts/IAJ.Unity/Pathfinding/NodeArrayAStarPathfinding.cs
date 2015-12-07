@@ -56,7 +56,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
             LocationRecord edgeToLocRec = new LocationRecord(){
                 Location = connectionEdge.ToNode
             };
-            float securityAverage = 1.5f;
+            float securityAverage = 0.0f;
             if (autonomousCharacter.SecurityMap.ContainsKey(edgeToLocRec) && autonomousCharacter.SecurityMap.ContainsKey(edgeFromLocRec))
             {
                 securityAverage = (autonomousCharacter.SecurityMap[edgeFromLocRec] + autonomousCharacter.SecurityMap[edgeToLocRec]) * 0.5f;

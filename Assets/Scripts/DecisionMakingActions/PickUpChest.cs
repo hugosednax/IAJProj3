@@ -48,11 +48,6 @@ namespace Assets.Scripts.DecisionMakingActions
         public override void ApplyActionEffects(WorldModel worldModel)
         {
             base.ApplyActionEffects(worldModel);
-
-            var restValue = worldModel.GetGoalValue(AutonomousCharacter.REST_GOAL);
-            worldModel.SetGoalValue(AutonomousCharacter.REST_GOAL, restValue + 0.5f);
-            var surviveValue = worldModel.GetGoalValue(AutonomousCharacter.SURVIVE_GOAL);
-            worldModel.SetGoalValue(AutonomousCharacter.SURVIVE_GOAL, surviveValue + 0.5f);
             var money = (int)worldModel.GetProperty(Properties.MONEY);
             worldModel.SetProperty(Properties.MONEY, money + 5);
             var richGoal = (float)worldModel.GetGoalValue(AutonomousCharacter.GET_RICH_GOAL);

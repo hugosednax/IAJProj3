@@ -69,27 +69,27 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 
         public override void SetProperty(string propertyName, object value)
         {
-            if (propertyName == "Energy")
+            if (propertyName.Equals("Energy"))
             {
                 this.Properties[0] = value;
                 return;
             }
-            else if (propertyName == "Arrows")
+            else if (propertyName.Equals("Arrows"))
             {
                 this.Properties[1] = value;
                 return;
             }
-            else if (propertyName == "Health")
+            else if (propertyName.Equals("Health"))
             {
                 this.Properties[2] = value;
                 return;
             }
-            else if (propertyName == "Money")
+            else if (propertyName.Equals("Money"))
             {
                 this.Properties[3] = value;
                 return;
             }
-            else if (propertyName == "Hunger")
+            else if (propertyName.Equals("Hunger"))
             {
                 this.Properties[4] = value;
                 return;
@@ -136,10 +136,10 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             }
 
             if (goalName.Equals("Survive")) this.GoalValues[0] = limitedValue;
-            if (goalName.Equals("Rest")) this.GoalValues[1] = limitedValue;
-            if (goalName.Equals("Eat")) this.GoalValues[2] = limitedValue;
-            if (goalName.Equals("GetRich")) this.GoalValues[3] = limitedValue;
-            if (goalName.Equals("Conquer")) this.GoalValues[4] = limitedValue;
+            else if (goalName.Equals("Rest")) this.GoalValues[1] = limitedValue;
+            else if (goalName.Equals("Eat")) this.GoalValues[2] = limitedValue;
+            else if (goalName.Equals("GetRich")) this.GoalValues[3] = limitedValue;
+            else if (goalName.Equals("Conquer")) this.GoalValues[4] = limitedValue;
         }
 
         public override WorldModel GenerateChildWorldModel()
