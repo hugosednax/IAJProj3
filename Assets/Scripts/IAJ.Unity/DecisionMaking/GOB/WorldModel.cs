@@ -30,10 +30,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         public abstract void SetProperty(string propertyName, object value);
         public abstract float GetGoalValue(string goalName);
         public abstract void SetGoalValue(string goalName, float value);
-        public virtual WorldModel GenerateChildWorldModel()
-        {
-            return null;
-        }
+        public abstract WorldModel GenerateChildWorldModel();
         public virtual float CalculateDiscontentment(List<Goal> goals)
         {
             return 0.0f;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.GameManager;
 using UnityEngine;
+using System;
 
 namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
@@ -41,7 +42,6 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 
             if (propertyName.Equals(Properties.POSITION))
                 return this.GameManager.characterData.CharacterGameObject.transform.position;
-
             return true;
         }
 

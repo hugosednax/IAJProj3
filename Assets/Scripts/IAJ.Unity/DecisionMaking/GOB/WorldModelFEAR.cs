@@ -14,22 +14,25 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         int trees;
         int beds;
         int chests;
-
+        public const float nullGoal = -999.0f;
         public WorldModelFEAR(List<Action> actions) : base(actions)
         {
-            this.PropertiesArray = new object[5];
+            this.PropertiesArray = new object[6];
             this.GoalValues = new float[5];
-            Populatefloat(GoalValues, 0f);
+            Populatefloat(GoalValues, nullGoal);
             PopulateProperties();
         }
 
         public WorldModelFEAR(WorldModelFEAR parent) : base(parent)
         {
-            this.PropertiesArray = new object[5];
+            this.PropertiesArray = new object[6];
+            parent.PropertiesArray.CopyTo(this.PropertiesArray, 0);
+            
             this.GoalValues = new float[5];
-            Populatefloat(GoalValues, 0f);
-            PopulateProperties();
-            InitArrays(parent.boars, parent.trees, parent.beds, parent.chests);
+            parent.GoalValues.CopyTo(this.GoalValues, 0);
+
+            this.Resources = new object[parent.Resources.Length];
+            parent.Resources.CopyTo(this.Resources, 0);
         }
 
         public void InitArrays(int boars, int trees, int beds, int chests)
@@ -47,17 +50,18 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         {
             for (int i = 0; i < count; i++)
             {
-                arr[i] = value;
+                arr[i] = null;
             }
         }
 
         void PopulateProperties()
         {
-            PropertiesArray[0] = 0.0f;
-            PropertiesArray[1] = 0;
-            PropertiesArray[2] = 0;
-            PropertiesArray[3] = 0;
-            PropertiesArray[4] = 0.0f;
+            PropertiesArray[0] = null;
+            PropertiesArray[1] = null;
+            PropertiesArray[2] = null;
+            PropertiesArray[3] = null;
+            PropertiesArray[4] = null;
+            PropertiesArray[5] = null;
         }
 
         void Populatefloat(float[] arr, float value)
@@ -72,126 +76,304 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         {
             if (propertyName.Equals(Properties.ENERGY))
             {
-                return this.PropertiesArray[0];
+                if (this.PropertiesArray[0] != null)
+                {
+                    return this.PropertiesArray[0];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Equals(Properties.ARROWS))
             {
-                return this.PropertiesArray[1];
+                if (this.PropertiesArray[1] != null)
+                {
+                    return this.PropertiesArray[1];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Equals(Properties.HP))
             {
-                return this.PropertiesArray[2];
+                if (this.PropertiesArray[2] != null)
+                {
+                    return this.PropertiesArray[2];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Equals(Properties.MONEY))
             {
-                return this.PropertiesArray[3];
+                if (this.PropertiesArray[3] != null)
+                {
+                    return this.PropertiesArray[3];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Equals(Properties.HUNGER))
             {
-                return this.PropertiesArray[4];
+                if (this.PropertiesArray[4] != null)
+                {
+                    return this.PropertiesArray[4];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if (propertyName.Equals(Properties.POSITION))
+            {
+                if (this.PropertiesArray[5] != null)
+                {
+                    return this.PropertiesArray[5];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Contains("Boar"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                return this.Resources[0 + cloneNumber];
+                if (this.Resources[0+cloneNumber] != null)
+                {
+                    return this.Resources[0 + cloneNumber];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Contains("Tree"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                return this.Resources[boars + cloneNumber];
+                if (this.Resources[boars + cloneNumber] != null)
+                {
+                    return this.Resources[boars + cloneNumber];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Contains("Bed"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                return this.Resources[boars + trees + cloneNumber];
+                if (this.Resources[boars + trees + cloneNumber] != null)
+                {
+                    return this.Resources[boars + trees + cloneNumber];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if (propertyName.Contains("Chest"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                //Debug.Log("Length : " + Resources.Length);
-                //Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
-                return this.Resources[boars + trees + beds + cloneNumber];
+                if (this.Resources[boars + trees + beds + cloneNumber] != null)
+                {
+                    return this.Resources[boars + trees + beds + cloneNumber];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetProperty(propertyName);
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else if (this.Parent != null)
-            {
-                return this.Parent.GetProperty(propertyName);
-            }
-            return null; 
+            Debug.Log("Property name: " + propertyName);
+            throw new Exception();
         }
 
         public override void SetProperty(string propertyName, object value)
         {
-            if (propertyName.Equals("Energy"))
+            if (propertyName.Equals(Properties.ENERGY))
             {
                 this.PropertiesArray[0] = value;
                 return;
             }
-            else if (propertyName.Equals("Arrows"))
+            else if (propertyName.Equals(Properties.ARROWS))
             {
                 this.PropertiesArray[1] = value;
                 return;
             }
-            else if (propertyName.Equals("Health"))
+            else if (propertyName.Equals(Properties.HP))
             {
                 this.PropertiesArray[2] = value;
                 return;
             }
-            else if (propertyName.Equals("Money"))
+            else if (propertyName.Equals(Properties.MONEY))
             {
                 this.PropertiesArray[3] = value;
                 return;
             }
-            else if (propertyName.Equals("Hunger"))
+            else if (propertyName.Equals(Properties.HUNGER))
             {
                 this.PropertiesArray[4] = value;
+                return;
+            }
+            else if (propertyName.Equals(Properties.POSITION))
+            {
+                this.PropertiesArray[5] = value;
                 return;
             }
             else if (propertyName.Contains("Boar"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-
-               //Debug.Log("test0" + propertyName);
-               // Debug.Log("test" + cloneNumber);
                 this.Resources[0 + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Tree"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                //Debug.Log("test0" + propertyName);
-               /// Debug.Log("test" + cloneNumber);
                 this.Resources[boars + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Bed"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                //Debug.Log("test0" + propertyName);
-                //Debug.Log("test" + cloneNumber);
                 this.Resources[boars + trees + cloneNumber] = value;
                 return;
             }
             else if (propertyName.Contains("Chest"))
             {
                 int cloneNumber = getCloneNumber(propertyName);
-                //Debug.Log("test0" + propertyName);
-                //Debug.Log("test " + (boars + trees + beds) +" "+ propertyName[7] + " "+ cloneNumber);
-                //Debug.Log("Length : " + Resources.Length);
-                //Debug.Log("Wanted: " + boars + trees + beds + cloneNumber);
                 this.Resources[boars + trees + beds + cloneNumber] = value;
                 return;
             }
-            return;
+            Debug.Log("Property name: " + propertyName);
+            throw new Exception();
         }
 
         public override float GetGoalValue(string goalName)
         {
-            if (goalName.Equals("Survive")) return this.GoalValues[0];
-            if (goalName.Equals("Rest")) return this.GoalValues[1];
-            if (goalName.Equals("Eat")) return this.GoalValues[2];
-            if (goalName.Equals("GetRich")) return this.GoalValues[3];
-            if (goalName.Equals("Conquer")) return this.GoalValues[4];
-            else return 0;
+            if (goalName.Equals(AutonomousCharacter.SURVIVE_GOAL))
+            {
+                if (this.GoalValues[0] != -999.0f)
+                {
+                    return this.GoalValues[0];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetGoalValue(goalName);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (goalName.Equals(AutonomousCharacter.REST_GOAL))
+            {
+                if (this.GoalValues[1] != -999.0f)
+                {
+                    return this.GoalValues[1];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetGoalValue(goalName);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (goalName.Equals(AutonomousCharacter.EAT_GOAL))
+            {
+                if (this.GoalValues[2] != -999.0f)
+                {
+                    return this.GoalValues[2];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetGoalValue(goalName);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (goalName.Equals(AutonomousCharacter.GET_RICH_GOAL))
+            {
+                if (this.GoalValues[3] != -999.0f)
+                {
+                    return this.GoalValues[3];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetGoalValue(goalName);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (goalName.Equals(AutonomousCharacter.CONQUER_GOAL))
+            {
+                if (this.GoalValues[4] != -999.0f)
+                {
+                    return this.GoalValues[4];
+                }
+                else if (this.Parent != null)
+                {
+                    return this.Parent.GetGoalValue(goalName);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                Debug.Log("Goal name: " + goalName);
+                throw new Exception();
+            }
         }
 
         private int getCloneNumber(string propertyName) 
@@ -221,11 +403,16 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
                 limitedValue = 0.0f;
             }
 
-            if (goalName.Equals("Survive")) this.GoalValues[0] = limitedValue;
-            else if (goalName.Equals("Rest")) this.GoalValues[1] = limitedValue;
-            else if (goalName.Equals("Eat")) this.GoalValues[2] = limitedValue;
-            else if (goalName.Equals("GetRich")) this.GoalValues[3] = limitedValue;
-            else if (goalName.Equals("Conquer")) this.GoalValues[4] = limitedValue;
+            if (goalName.Equals(AutonomousCharacter.SURVIVE_GOAL)) this.GoalValues[0] = limitedValue;
+            else if (goalName.Equals(AutonomousCharacter.REST_GOAL)) this.GoalValues[1] = limitedValue;
+            else if (goalName.Equals(AutonomousCharacter.EAT_GOAL)) this.GoalValues[2] = limitedValue;
+            else if (goalName.Equals(AutonomousCharacter.GET_RICH_GOAL)) this.GoalValues[3] = limitedValue;
+            else if (goalName.Equals(AutonomousCharacter.CONQUER_GOAL)) this.GoalValues[4] = limitedValue;
+            else
+            {
+                Debug.Log("Goal name: " + goalName);
+                throw new Exception();
+            }
         }
 
         public override WorldModel GenerateChildWorldModel()
