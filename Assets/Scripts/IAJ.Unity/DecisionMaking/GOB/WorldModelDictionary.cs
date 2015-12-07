@@ -5,12 +5,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
     public class WorldModelDictionary : WorldModel
     {
         private Dictionary<string, object> Properties { get; set; }
-        private List<Action> Actions { get; set; }
-        protected IEnumerator<Action> ActionEnumerator { get; set; }
-
         private Dictionary<string, float> GoalValues { get; set; }
-
-        protected WorldModelDictionary Parent { get; set; }
 
         public WorldModelDictionary(List<Action> actions) : base(actions)
         {
@@ -22,7 +17,6 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         {
             this.Properties = new Dictionary<string, object>();
             this.GoalValues = new Dictionary<string, float>();
-            this.ActionEnumerator = this.Actions.GetEnumerator();
         }
 
         public override object GetProperty(string propertyName)

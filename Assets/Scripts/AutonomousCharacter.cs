@@ -199,7 +199,7 @@ namespace Assets.Scripts
             this.GreenInfluenceMap.Initialize(this.GreenFlags);
 
 
-            var worldModel = new CurrentStateWorldModel(this.GameManager, this.Actions, this.Goals);
+            var worldModel = new CurrentStateWorldModelDictionary(this.GameManager, this.Actions, this.Goals);
 
             this.GOAPDecisionMaking = new DepthLimitedGOAPDecisionMaking(worldModel,this.Actions,this.Goals);
         }

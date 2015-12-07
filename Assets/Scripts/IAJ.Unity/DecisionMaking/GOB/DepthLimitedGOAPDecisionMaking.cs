@@ -13,7 +13,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         public int TotalActionCombinationsProcessed { get; set; }
         public bool InProgress { get; set; }
 
-        public CurrentStateWorldModel InitialWorldModel { get; set; }
+        public CurrentStateWorldModelDictionary InitialWorldModel { get; set; }
         private List<Action> Actions { get; set; }
         private List<Goal> Goals { get; set; }
         private WorldModel[] Models { get; set; }
@@ -23,7 +23,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         public float BestDiscontentmentValue { get; private set; }
         private int CurrentDepth {  get; set; }
 
-        public DepthLimitedGOAPDecisionMaking(CurrentStateWorldModel currentStateWorldModel, List<Action> actions, List<Goal> goals)
+        public DepthLimitedGOAPDecisionMaking(CurrentStateWorldModelDictionary currentStateWorldModel, List<Action> actions, List<Goal> goals)
         {
             this.ActionCombinationsProcessedPerFrame = 200;
             this.Actions = actions;

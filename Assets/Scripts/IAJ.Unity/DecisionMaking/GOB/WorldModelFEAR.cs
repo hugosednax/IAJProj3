@@ -8,16 +8,8 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         private object[] Properties { get; set; }
         private object[] Resources { get; set; }
         private float[] GoalValues { get; set; }
-        
-
         //private Dictionary<string, object> Properties { get; set; }
-        
-        private List<Action> Actions { get; set; }
-        protected IEnumerator<Action> ActionEnumerator { get; set; }
-
         //private Dictionary<string, float> GoalValues { get; set; }
-
-        protected WorldModelFEAR Parent { get; set; }
 
         public WorldModelFEAR(List<Action> actions) : base(actions)
         {

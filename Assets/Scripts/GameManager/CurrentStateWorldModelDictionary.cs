@@ -5,11 +5,13 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
     //class that represents a world model that corresponds to the current state of the world,
     //all required properties and goals are stored inside the game manager
-    public class CurrentStateWorldModel : WorldModel
+    public class CurrentStateWorldModelDictionary : WorldModel
     {
         private GameManager.GameManager GameManager { get; set; }
-        private Dictionary<string, Goal> Goals { get; set; } 
-        public CurrentStateWorldModel(GameManager.GameManager gameManager, List<Action> actions, List<Goal> goals) : base(actions){
+        private Dictionary<string, Goal> Goals { get; set; }
+        public CurrentStateWorldModelDictionary(GameManager.GameManager gameManager, List<Action> actions, List<Goal> goals)
+            : base(actions)
+        {
             this.GameManager = gameManager;
             this.Parent = null;
             this.Goals = new Dictionary<string, Goal>();
