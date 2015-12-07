@@ -4,57 +4,180 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
 {
     public class WorldModel
     {
-        private Dictionary<string, object> Properties { get; set; }
-        private List<Action> Actions { get; set; }
-        protected IEnumerator<Action> ActionEnumerator { get; set; } 
+        private string[] ResourceID { get; set; }
+        private object[] Properties { get; set; }
+        private object[] Resources { get; set; }
+        private float[] GoalValues { get; set; }
+        
 
-        private Dictionary<string, float> GoalValues { get; set; } 
+        //private Dictionary<string, object> Properties { get; set; }
+        
+        private List<Action> Actions { get; set; }
+        protected IEnumerator<Action> ActionEnumerator { get; set; }
+
+        //private Dictionary<string, float> GoalValues { get; set; }
 
         protected WorldModel Parent { get; set; }
 
         public WorldModel(List<Action> actions)
         {
-            this.Properties = new Dictionary<string, object>();
-            this.GoalValues = new Dictionary<string, float>();
+            this.ResourceID = new string[50];
+            this.Properties = new object[5];
+            this.Resources = new object[50];
+            this.GoalValues = new float[5];
+            //this.Properties = new Dictionary<string, object>();
+            //this.GoalValues = new Dictionary<string, float>();
             this.Actions = actions;
             this.ActionEnumerator = actions.GetEnumerator();
         }
 
         public WorldModel(WorldModel parent)
         {
-            this.Properties = new Dictionary<string, object>();
-            this.GoalValues = new Dictionary<string, float>();
+            //this.Properties = new Dictionary<string, object>();
+            //this.GoalValues = new Dictionary<string, float>();
+            this.ResourceID = new string[50];
+            this.Properties = new object[5];
+            this.Resources = new object[5];
+            this.GoalValues = new float[5];
             this.Actions = parent.Actions;
             this.Parent = parent;
             this.ActionEnumerator = this.Actions.GetEnumerator();
         }
 
+
+        /*public virtual object GetResource(string resourceName)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (this.ResourceID[i].Equals(resourceName))
+                {
+                    return this.Resources[i];
+                }
+                else
+                {
+                    return null;
+                }
+            }   
+        }*/
+
+
+
         public virtual object GetProperty(string propertyName)
         {
+
+            if(propertyName == "Energy")
+            {
+                return this.Properties[0];
+            }
+            else if(propertyName == "Arrows")
+            {
+                return this.Properties[1];
+            }
+            else if(propertyName == "Health")
+            {
+                return this.Properties[2];
+            }
+            else if(propertyName == "Money")
+            {
+                return this.Properties[3];
+            }
+            else if(propertyName == "Hunger")
+            {
+                return this.Properties[4];
+            }
+
             //recursive implementation of WorldModel
+            /*
             if (this.Properties.ContainsKey(propertyName))
             {
                 return this.Properties[propertyName];
             }
+            */
             else if (this.Parent != null)
             {
                 return this.Parent.GetProperty(propertyName);
             }
-            else
+            else for (int i = 0; i < 50; i++)
             {
-                return null;
+                if (this.ResourceID[i].Equals(propertyName))
+                {
+                    return this.Resources[i];
+                }
             }
+            return null; 
         }
+
+
+        /*public virtual void SetResource(string resourceName, object value)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (this.ResourceID[i] == null)
+                {
+                    this.Resources[i] = value;
+                    this.ResourcesID[i] = propertyName;
+                    break;
+                }
+
+                else if (this.ResourceID[i].Equals(propertyName))
+                {
+                    this.Resources[i] = value;
+                    break;
+                }
+            }
+            return;
+        }*/
 
         public virtual void SetProperty(string propertyName, object value)
         {
-            this.Properties[propertyName] = value;
+            if (propertyName == "Energy")
+            {
+                this.Properties[0] = value;
+                return;
+            }
+            else if (propertyName == "Arrows")
+            {
+                this.Properties[1] = value;
+                return;
+            }
+            else if (propertyName == "Health")
+            {
+                this.Properties[2] = value;
+                return;
+            }
+            else if (propertyName == "Money")
+            {
+                this.Properties[3] = value;
+                return;
+            }
+            else if (propertyName == "Hunger")
+            {
+                this.Properties[4] = value;
+                return;
+            }
+            else for (int i = 0; i < 50; i++)
+            {
+                if (this.ResourceID[i] == null)
+                {
+                    this.Resources[i] = value;
+                    this.ResourceID[i] = propertyName;
+                    break;
+                }
+
+                else if (this.ResourceID[i].Equals(propertyName))
+                {
+                    this.Resources[i] = value;
+                    break;
+                }
+            }
+            return;
+            
         }
 
         public virtual float GetGoalValue(string goalName)
         {
             //recursive implementation of WorldModel
-            if (this.GoalValues.ContainsKey(goalName))
+            /*if (this.GoalValues.ContainsKey(goalName))
             {
                 return this.GoalValues[goalName];
             }
@@ -66,6 +189,22 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             {
                 return 0;
             }
+            */
+
+            if (goalName.Equals("Survive")) return this.GoalValues[0];
+
+            if (goalName.Equals("Rest")) return this.GoalValues[1];
+
+            if (goalName.Equals("Eat")) return this.GoalValues[2];
+
+            if (goalName.Equals("GetRich")) return this.GoalValues[3];
+
+            if (goalName.Equals("Conquer")) return this.GoalValues[4];
+
+
+            else return 0;
+
+
         }
 
         public virtual void SetGoalValue(string goalName, float value)
@@ -81,7 +220,15 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
                 limitedValue = 0.0f;
             }
 
-            this.GoalValues[goalName] = limitedValue;
+            if (goalName.Equals("Survive")) this.GoalValues[0] = limitedValue;
+
+            if (goalName.Equals("Rest")) this.GoalValues[1] = limitedValue;
+
+            if (goalName.Equals("Eat")) this.GoalValues[2] = limitedValue;
+
+            if (goalName.Equals("GetRich")) this.GoalValues[3] = limitedValue;
+
+            if (goalName.Equals("Conquer")) this.GoalValues[4] = limitedValue;
         }
 
         public WorldModel GenerateChildWorldModel()
@@ -116,7 +263,7 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
             {
                 if (this.ActionEnumerator.MoveNext())
                 {
-                    action = this.ActionEnumerator.Current;    
+                    action = this.ActionEnumerator.Current;
                 }
                 else
                 {
@@ -128,3 +275,4 @@ namespace Assets.Scripts.IAJ.Unity.DecisionMaking.GOB
         }
     }
 }
+
